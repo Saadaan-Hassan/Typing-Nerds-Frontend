@@ -34,7 +34,7 @@ const stats = [
 
 export function StatsSection() {
   return (
-    <section className="bg-background relative py-20">
+    <section className="bg-background relative px-8 py-20">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_bottom,rgba(var(--primary-rgb),0.1),transparent_70%)]" />
 
       <div className="container px-4">

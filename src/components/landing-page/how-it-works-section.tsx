@@ -44,7 +44,7 @@ const steps = [
 
 export function HowItWorksSection() {
   return (
-    <section className="bg-muted/30 relative py-20">
+    <section className="bg-muted/30 relative px-8 py-20">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(var(--accent-rgb),0.1),transparent_50%)]" />
 
       <div className="container px-4">

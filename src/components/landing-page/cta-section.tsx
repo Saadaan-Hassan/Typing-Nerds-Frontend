@@ -70,7 +70,7 @@ export function CTASection() {
           >
             <Button
               size="lg"
-              className="from-primary to-accent text-primary-foreground bg-gradient-to-r hover:opacity-90"
+              className="text-primary-foreground hover:opacity-95"
             >
               Sign Up Free
             </Button>
