@@ -3,7 +3,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
-import { BarChart2, Keyboard, User } from 'lucide-react';
+import {
+  BarChart2,
+  BookOpen,
+  Keyboard,
+  Menu,
+  User as UserIcon,
+} from 'lucide-react';
 
 import { useAuth } from '@/lib/context/auth-context';
 import { cn } from '@/lib/utils';
@@ -22,46 +28,55 @@ export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
 
   const navItems = [
-    { href: '/', label: 'Race', icon: Keyboard },
+    { href: ROUTES.PRACTICE, label: 'Practice', icon: BookOpen },
     { href: ROUTES.LEADERBOARD, label: 'Leaderboard', icon: BarChart2 },
-    { href: ROUTES.USER.PROFILE, label: 'Profile', icon: User },
+    {
+      href: isAuthenticated ? ROUTES.DASHBOARD : ROUTES.AUTH.LOGIN,
+      label: isAuthenticated ? 'Dashboard' : 'Login',
+      icon: UserIcon,
+    },
   ];
 
   return (
-    <header className="border-border bg-background sticky top-0 z-50 w-full border-b">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-6">
+    <header className="bg-background border-border sticky top-0 z-50 border-b px-8">
+      <div className="container mx-auto flex h-16 items-center">
+        {/* Left: Logo */}
+        <div className="flex flex-1 items-center">
           <Link href="/" className="flex items-center gap-2">
             <Keyboard className="text-primary h-6 w-6" />
             <span className="text-primary-foreground text-xl font-bold">
               TypeRacer
             </span>
           </Link>
-          <nav className="hidden gap-6 md:flex">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'hover:text-primary flex items-center gap-2 text-sm font-medium transition-colors',
-                  pathname === item.href
-                    ? 'text-primary'
-                    : 'text-muted-foreground'
-                )}
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </Link>
-            ))}
-          </nav>
         </div>
-        <div className="flex items-center gap-4">
+
+        {/* Center: Nav Links */}
+        <nav className="hidden flex-1 justify-center gap-6 md:flex">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={cn(
+                'hover:text-primary flex items-center gap-2 text-sm font-medium transition-colors',
+                pathname === item.href
+                  ? 'text-primary'
+                  : 'text-muted-foreground'
+              )}
+            >
+              <item.icon className="h-4 w-4" />
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Right: Profile or Sign In */}
+        <div className="flex flex-1 items-center justify-end gap-4">
           {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="relative h-8 w-8 rounded-full"
+                  className="relative h-8 w-8 rounded-full p-0"
                 >
                   <Avatar className="h-8 w-8">
                     <AvatarImage
@@ -75,11 +90,11 @@ export function Navbar() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56" align="end" forceMount>
-                <div className="flex flex-col space-y-1 p-2">
+                <div className="px-4 py-2">
                   <p className="text-sm leading-none font-medium">
                     {user.name}
                   </p>
-                  <p className="text-muted-foreground text-xs leading-none">
+                  <p className="text-muted-foreground mt-1 text-xs leading-none">
                     {user.email}
                   </p>
                 </div>
@@ -88,12 +103,10 @@ export function Navbar() {
                   <Link href={ROUTES.USER.PROFILE}>Profile</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href={ROUTES.USER.SETTINGS}>Settings</Link>
+                  <Link href={ROUTES.DASHBOARD}>Dashboard</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => logout()}>
-                  Log out
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
@@ -105,6 +118,11 @@ export function Navbar() {
               <Link href={ROUTES.AUTH.LOGIN}>Sign In</Link>
             </Button>
           )}
+
+          {/* Mobile menu icon */}
+          <Button variant="ghost" className="md:hidden">
+            <Menu className="text-muted-foreground h-6 w-6" />
+          </Button>
         </div>
       </div>
     </header>

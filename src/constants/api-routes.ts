@@ -14,6 +14,16 @@ export const API_ROUTES = {
   USER: {
     PROFILE: '/api/user/profile',
   },
+  ROOMS: {
+    CREATE: '/api/rooms/create',
+    JOIN: '/api/rooms/join',
+    LEAVE: '/api/rooms/leave',
+    PUBLIC: '/api/rooms/public',
+    RESULTS: `/api/rooms/results`,
+    GET_ROOM: (roomId: string) => `/api/rooms/${roomId}`,
+    GET_MESSAGES: (roomId: string) => `/api/rooms/${roomId}/messages`,
+    SEND_MESSAGE: (roomId: string) => `/api/rooms/${roomId}/messages/send`,
+  },
   DRILLS: {
     SAVE: '/api/drills',
     GET_USER_DRILLS: '/api/drills',

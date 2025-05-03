@@ -4,10 +4,16 @@
 import { ReactNode, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
+import { Keyboard } from 'lucide-react';
 
 import { useAuth } from '@/lib/context/auth-context';
 
-const PUBLIC_PATHS = ['/', '/auth', '/practice'];
+// Auth callback paths that should always be accessible
+const AUTH_CALLBACK_PATHS = [
+  '/auth/success',
+  '/auth/error',
+  '/auth/oauth-callback',
+];
 
 export function AuthGuard({ children }: { children: ReactNode }) {
   const { isAuthenticated, loading } = useAuth();
@@ -15,26 +21,30 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (loading) return; // wait until we know auth state
+    if (loading) return;
 
-    // Normalize so '/auth/login' still matches '/auth'
-    const isPublic = PUBLIC_PATHS.some(
-      (path) => pathname === path || pathname.startsWith(path + '/')
+    const isCallback = AUTH_CALLBACK_PATHS.some(
+      (path) => pathname === path || pathname.startsWith(path)
     );
+    if (isCallback) return;
 
-    if (!isAuthenticated && !isPublic) {
-      // Not logged in ➔ protect
+    const isProtected =
+      pathname === ROUTES.DASHBOARD ||
+      pathname.startsWith('/dashboard') ||
+      pathname.startsWith('/user');
+
+    if (!isAuthenticated && isProtected) {
       router.replace(ROUTES.AUTH.LOGIN);
     } else if (isAuthenticated && pathname.startsWith('/auth')) {
-      // Logged in ➔ block auth routes
-      router.replace('/dashboard');
+      router.replace(ROUTES.DASHBOARD);
     }
   }, [isAuthenticated, loading, pathname, router]);
 
-  // Optionally render a loader while we check
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center">Loading…</div>
+      <div className="bg-background/75 fixed inset-0 flex items-center justify-center">
+        <Keyboard className="h-16 w-16 animate-pulse" />
+      </div>
     );
   }
 

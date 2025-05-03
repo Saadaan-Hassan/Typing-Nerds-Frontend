@@ -4,6 +4,8 @@ export const ROUTES = {
     SIGNUP: '/auth/signup',
     FORGOT_PASSWORD: '/auth/forgot-password',
   },
+  DASHBOARD: '/dashboard',
+  PRACTICE: '/practice',
   LEADERBOARD: '/leaderboard',
   USER: {
     PROFILE: '/user/profile',
