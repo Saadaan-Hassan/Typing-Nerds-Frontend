@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { getRandomText } from '@/lib/text-utils';
 import { LiveStats } from '@/components/practice/live-stats';
@@ -30,6 +30,7 @@ export function TypingPlayground({ onFinish }: TypingPlaygroundProps) {
     'beginner' | 'intermediate' | 'advanced'
   >('beginner');
   const [lastTypedCorrect, setLastTypedCorrect] = useState(true);
+  const [textCategory, setTextCategory] = useState<'word' | 'code'>('word');
 
   const startTimeRef = useRef<number | null>(null);
   const typingAreaRef = useRef<HTMLDivElement>(null);
@@ -49,13 +50,49 @@ export function TypingPlayground({ onFinish }: TypingPlaygroundProps) {
     return () => clearInterval(timer);
   }, [isActive]);
 
+  // Define handleFinish as useCallback to avoid recreating it on each render
+  const handleFinish = useCallback(() => {
+    setIsActive(false);
+    let correct = 0;
+    for (let i = 0; i < typedText.length; i++) {
+      if (typedText[i] === text[i]) correct++;
+    }
+    const finalAcc = typedText.length
+      ? Math.round((correct / typedText.length) * 100)
+      : 100;
+    const elapsed = roundDuration - timeLeft;
+    const finalWpm = elapsed
+      ? Math.round(typedText.length / 5 / (elapsed / 60))
+      : 0;
+
+    onFinish({
+      wpm: finalWpm,
+      accuracy: finalAcc,
+      totalLetters: typedText.length,
+      correctLetters: correct,
+      incorrectLetters: typedText.length - correct,
+      timeElapsed: elapsed,
+      content: text,
+      category: textCategory,
+      wpmOverTime,
+    });
+  }, [
+    typedText,
+    text,
+    roundDuration,
+    timeLeft,
+    textCategory,
+    wpmOverTime,
+    onFinish,
+  ]);
+
   // Auto finish
   useEffect(() => {
     if (isActive && timeLeft === 0 && !hasFinishedRef.current) {
       hasFinishedRef.current = true;
       handleFinish();
     }
-  }, [timeLeft, isActive]);
+  }, [timeLeft, isActive, handleFinish]);
 
   // Stats update
   useEffect(() => {
@@ -112,31 +149,6 @@ export function TypingPlayground({ onFinish }: TypingPlaygroundProps) {
     setWpmOverTime((prev) => [...prev, { time: elapsed, wpm: cw }]);
   };
 
-  const handleFinish = () => {
-    setIsActive(false);
-    let correct = 0;
-    for (let i = 0; i < typedText.length; i++) {
-      if (typedText[i] === text[i]) correct++;
-    }
-    const finalAcc = typedText.length
-      ? Math.round((correct / typedText.length) * 100)
-      : 100;
-    const elapsed = roundDuration - timeLeft;
-    const finalWpm = elapsed
-      ? Math.round(typedText.length / 5 / (elapsed / 60))
-      : 0;
-
-    onFinish({
-      wpm: finalWpm,
-      accuracy: finalAcc,
-      totalLetters: typedText.length,
-      correctLetters: correct,
-      incorrectLetters: typedText.length - correct,
-      timeElapsed: elapsed,
-      wpmOverTime,
-    });
-  };
-
   const handleDurationChange = (dur: number) => {
     setRoundDuration(dur);
     setTimeLeft(dur);
@@ -147,6 +159,12 @@ export function TypingPlayground({ onFinish }: TypingPlaygroundProps) {
     setWpmOverTime([]);
   };
 
+  const handleCategoryChange = (category: 'word' | 'code') => {
+    setTextCategory(category);
+    // This would ideally fetch a different type of text content based on category
+    // For now, we'll just use the existing text generation
+  };
+
   return (
     <div className="flex h-full flex-col gap-4 p-4">
       <div className="flex h-[15%] gap-4">
@@ -154,6 +172,8 @@ export function TypingPlayground({ onFinish }: TypingPlaygroundProps) {
           <RoundOptions
             duration={roundDuration}
             onDurationChange={handleDurationChange}
+            category={textCategory}
+            onCategoryChange={handleCategoryChange}
           />
         </div>
         <div className="basis-1/2">

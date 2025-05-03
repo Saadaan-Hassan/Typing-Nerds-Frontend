@@ -16,11 +16,14 @@ export function OAuthButtons() {
     setIsGoogleLoading(true);
 
     try {
-      // Redirect to Google OAuth endpoint with success redirect URL
+      // Redirect to Google OAuth endpoint with success and error redirect URLs
       const successUrl = encodeURIComponent(
         `${window.location.origin}/auth/success`
       );
-      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}${API_ROUTES.AUTH.GOOGLE}?redirect_url=${successUrl}`;
+      const errorUrl = encodeURIComponent(
+        `${window.location.origin}/auth/error`
+      );
+      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}${API_ROUTES.AUTH.GOOGLE}?redirect_url=${successUrl}&error_url=${errorUrl}`;
     } catch {
       toast.error(
         'There was a problem signing in with Google. Please try again.'
@@ -33,11 +36,14 @@ export function OAuthButtons() {
     setIsGithubLoading(true);
 
     try {
-      // Redirect to GitHub OAuth endpoint with success redirect URL
+      // Redirect to GitHub OAuth endpoint with success and error redirect URLs
       const successUrl = encodeURIComponent(
         `${window.location.origin}/auth/success`
       );
-      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}${API_ROUTES.AUTH.GITHUB}?redirect_url=${successUrl}`;
+      const errorUrl = encodeURIComponent(
+        `${window.location.origin}/auth/error`
+      );
+      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}${API_ROUTES.AUTH.GITHUB}?redirect_url=${successUrl}&error_url=${errorUrl}`;
     } catch {
       toast.error(
         'There was a problem signing in with GitHub. Please try again.'

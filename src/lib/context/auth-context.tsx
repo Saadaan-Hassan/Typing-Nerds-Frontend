@@ -17,7 +17,7 @@ import {
   clearTokens,
   clearUser,
   getTokens,
-  isAuthenticated,
+  getUser,
   setTokens,
   setUser,
 } from '@/lib/auth';
@@ -43,19 +43,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Check if user is authenticated on initial load
   useEffect(() => {
     const initAuth = async () => {
-      if (isAuthenticated()) {
+      console.log('Initializing auth context...');
+
+      // First check if we have a user in localStorage
+      const storedUser = getUser();
+      const tokensExist = !!getTokens();
+
+      if (tokensExist) {
+        console.log('Tokens found in localStorage');
+
+        if (storedUser) {
+          console.log('User found in localStorage:', storedUser);
+          setUserState(storedUser);
+        }
+
         try {
+          // Verify with backend
+          console.log('Verifying with backend...');
           await fetchCurrentUser();
-        } catch {
+        } catch (error) {
+          console.error('Error fetching current user:', error);
+
           // If fetching current user fails, attempt to refresh the token
           const refreshed = await refreshTokens();
           if (refreshed) {
-            await fetchCurrentUser();
+            try {
+              await fetchCurrentUser();
+            } catch (refreshError) {
+              console.error('Error after token refresh:', refreshError);
+              handleLogout();
+            }
           } else {
+            console.log('Token refresh failed, logging out');
             handleLogout();
           }
         }
+      } else {
+        console.log('No tokens found, user is not authenticated');
+        handleLogout(); // Clear any potential stale data
       }
+
       setLoading(false);
     };
 
@@ -64,6 +91,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchCurrentUser = async () => {
     try {
+      console.log('Fetching current user data...');
       const response = await apiCaller(
         API_ROUTES.AUTH.CURRENT_USER,
         'GET',
@@ -71,14 +99,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         {},
         true
       );
+
       if (response.data.success) {
         const userData = response.data.data;
+        console.log('Current user data fetched successfully:', userData);
         setUserState(userData);
         setUser(userData);
         return userData;
+      } else {
+        console.error('Current user fetch failed:', response.data);
+        return null;
       }
-      return null;
     } catch (error) {
+      console.error('Error in fetchCurrentUser:', error);
       throw error;
     }
   };
@@ -100,7 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
 
         toast.success('Login successful');
-        router.push('/dashboard');
+        router.push(ROUTES.DASHBOARD);
       } else {
         toast.error(response.data.message || 'Login failed');
       }
@@ -138,8 +171,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshTokens = async (): Promise<boolean> => {
     try {
+      console.log('Attempting to refresh tokens...');
       const tokens = getTokens();
-      if (!tokens?.refreshToken) return false;
+      if (!tokens?.refreshToken) {
+        console.log('No refresh token found');
+        return false;
+      }
 
       const response = await apiCaller(
         API_ROUTES.AUTH.REFRESH_TOKEN,
@@ -151,16 +188,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (response.data.success) {
         const { accessToken, refreshToken } = response.data.data;
+        console.log('Token refresh successful, setting new tokens');
         setTokens({ accessToken, refreshToken });
         return true;
       }
+
+      console.log('Token refresh failed:', response.data);
       return false;
-    } catch {
+    } catch (error) {
+      console.error('Error in refreshTokens:', error);
       return false;
     }
   };
 
   const handleLogout = () => {
+    console.log('Handling logout, clearing user data and tokens');
     clearTokens();
     clearUser();
     setUserState(null);
@@ -169,8 +211,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       await apiCaller(API_ROUTES.AUTH.LOGOUT, 'POST');
-    } catch {
-      console.error('Logout error');
+    } catch (error) {
+      console.error('Logout error:', error);
     } finally {
       handleLogout();
       toast.success('Logged out successfully');

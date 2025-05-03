@@ -14,6 +14,8 @@ export default function PracticePage() {
     correctLetters: 0,
     incorrectLetters: 0,
     timeElapsed: 0,
+    content: '',
+    category: 'word' as 'word' | 'code',
     wpmOverTime: [] as { time: number; wpm: number }[],
   });
 

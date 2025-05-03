@@ -24,4 +24,9 @@ export const API_ROUTES = {
     GET_MESSAGES: (roomId: string) => `/api/rooms/${roomId}/messages`,
     SEND_MESSAGE: (roomId: string) => `/api/rooms/${roomId}/messages/send`,
   },
+  DRILLS: {
+    SAVE: '/api/drills',
+    GET_USER_DRILLS: '/api/drills',
+    GET_STATS: '/api/drills/stats',
+  },
 } as const;
