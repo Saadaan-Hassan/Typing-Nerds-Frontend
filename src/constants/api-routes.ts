@@ -28,5 +28,7 @@ export const API_ROUTES = {
     SAVE: '/api/drills',
     GET_USER_DRILLS: '/api/drills',
     GET_STATS: '/api/drills/stats',
+    GET_HISTORY: '/api/drills/history',
+    GET_CHART_DATA: '/api/drills/chart-data',
   },
 } as const;

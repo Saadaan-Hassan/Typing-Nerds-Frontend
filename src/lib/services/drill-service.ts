@@ -65,6 +65,68 @@ export interface DrillsResponse {
   >;
 }
 
+export interface HistoryResponse {
+  success: boolean;
+  data: {
+    drillHistory: Array<
+      DrillResult & {
+        _id: string;
+        user: string;
+        createdAt: string;
+      }
+    >;
+    raceHistory: Array<{
+      competitionId: string;
+      date: string;
+      wpm: number;
+      accuracy: number;
+      position: number;
+      finishTime: number;
+    }>;
+    totalDrills: number;
+    totalRaces: number;
+  };
+}
+
+export interface ChartDataItem {
+  date: string;
+  wpm: number;
+  accuracy: number;
+  avgWpm?: number;
+  avgAccuracy?: number;
+  type: 'drill' | 'race';
+  category?: 'word' | 'code' | null;
+}
+
+export interface CategoryStats {
+  avgWpm: number;
+  avgAccuracy: number;
+  count: number;
+}
+
+export interface TypeStats {
+  drill: CategoryStats;
+  race: CategoryStats;
+}
+
+export interface ChartDataResponse {
+  success: boolean;
+  data: {
+    progression: ChartDataItem[];
+    dailyAverages: Array<{
+      date: string;
+      wpm: number;
+      accuracy: number;
+      count: number;
+    }>;
+    typeStats: TypeStats;
+    categoryStats: {
+      word: CategoryStats;
+      code: CategoryStats;
+    };
+  };
+}
+
 export const DrillService = {
   async saveDrillResult(data: DrillResult): Promise<DrillResponse> {
     try {
@@ -110,6 +172,41 @@ export const DrillService = {
       return response.data;
     } catch (error) {
       console.error('Error fetching user stats:', error);
+      throw error;
+    }
+  },
+
+  async getUserHistory(
+    page: number = 1,
+    limit: number = 10
+  ): Promise<HistoryResponse> {
+    try {
+      const response = await apiCaller(
+        `${API_ROUTES.DRILLS.GET_HISTORY}?page=${page}&limit=${limit}`,
+        'GET',
+        undefined,
+        {},
+        true
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching user history:', error);
+      throw error;
+    }
+  },
+
+  async getChartData(): Promise<ChartDataResponse> {
+    try {
+      const response = await apiCaller(
+        API_ROUTES.DRILLS.GET_CHART_DATA,
+        'GET',
+        undefined,
+        {},
+        true
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching chart data:', error);
       throw error;
     }
   },

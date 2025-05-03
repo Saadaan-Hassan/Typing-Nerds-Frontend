@@ -1,10 +1,28 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ROUTES } from '@/constants/routes';
-import { ArrowRight, Code, Keyboard, Target, Trophy, Zap } from 'lucide-react';
+import {
+  ArrowRight,
+  BarChart3,
+  ChevronRight,
+  Code,
+  FileText,
+  History,
+  Keyboard,
+  LineChart,
+  Target,
+  Trophy,
+  Zap,
+} from 'lucide-react';
 
 import { useAuth } from '@/lib/context/auth-context';
+import {
+  ChartDataResponse,
+  DrillService,
+  HistoryResponse,
+} from '@/lib/services/drill-service';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -14,11 +32,52 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AccuracyChart } from '@/components/dashboard/accuracy-chart';
+import { ComparisonChart } from '@/components/dashboard/comparison-chart';
+import { HistoryList } from '@/components/dashboard/history-list';
+import { ProgressionChart } from '@/components/dashboard/progression-chart';
 import { StatsCards } from '@/components/leaderboard/stats-cards';
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState('activity');
+  const [chartData, setChartData] = useState<ChartDataResponse['data'] | null>(
+    null
+  );
+  const [history, setHistory] = useState<HistoryResponse['data'] | null>(null);
+  const [isLoadingCharts, setIsLoadingCharts] = useState(true);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
+
+  // Fetch chart data and history on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoadingCharts(true);
+        setIsLoadingHistory(true);
+
+        // Fetch chart data
+        const chartResponse = await DrillService.getChartData();
+        if (chartResponse.success) {
+          setChartData(chartResponse.data);
+        }
+
+        // Fetch history data
+        const historyResponse = await DrillService.getUserHistory();
+        if (historyResponse.success) {
+          setHistory(historyResponse.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch dashboard data:', error);
+      } finally {
+        setIsLoadingCharts(false);
+        setIsLoadingHistory(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const quickActions = [
     {
@@ -101,72 +160,213 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="activity" className="mt-8">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="bg-secondary">
-          <TabsTrigger value="activity">Recent Activity</TabsTrigger>
-          <TabsTrigger value="stats">Detailed Stats</TabsTrigger>
-          <TabsTrigger value="achievements">Achievements</TabsTrigger>
+          <TabsTrigger value="activity">
+            <History className="mr-2 h-4 w-4" />
+            History
+          </TabsTrigger>
+          <TabsTrigger value="stats">
+            <LineChart className="mr-2 h-4 w-4" />
+            Performance
+          </TabsTrigger>
+          <TabsTrigger value="comparison">
+            <BarChart3 className="mr-2 h-4 w-4" />
+            Comparison
+          </TabsTrigger>
         </TabsList>
+
+        {/* History Tab */}
         <TabsContent value="activity" className="mt-4 space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Recent Races</CardTitle>
-              <CardDescription>Your latest typing competitions</CardDescription>
+              <CardTitle>Recent Activity</CardTitle>
+              <CardDescription>
+                Your latest typing drills and competitions
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="rounded-md border p-4 text-center">
-                <p className="text-muted-foreground">
-                  You haven&apos;t participated in any races yet. Join a race to
-                  see your activity here.
-                </p>
-                <Button asChild className="mt-4">
-                  <Link href="/">Start Racing</Link>
-                </Button>
-              </div>
+              {isLoadingHistory ? (
+                <HistoryList
+                  drillHistory={[]}
+                  raceHistory={[]}
+                  isLoading={true}
+                />
+              ) : history ? (
+                <HistoryList
+                  drillHistory={history.drillHistory}
+                  raceHistory={history.raceHistory}
+                />
+              ) : (
+                <div className="rounded-md border p-4 text-center">
+                  <p className="text-muted-foreground">
+                    No activity found. Complete drills or races to see your
+                    history here.
+                  </p>
+                  <div className="mt-4 flex justify-center space-x-4">
+                    <Button asChild variant="outline">
+                      <Link href={ROUTES.PRACTICE}>Practice Now</Link>
+                    </Button>
+                    <Button asChild>
+                      <Link href={ROUTES.COMPETITION.HOME}>Join a Race</Link>
+                    </Button>
+                  </div>
+                </div>
+              )}
             </CardContent>
+            {history &&
+              (history.drillHistory.length > 0 ||
+                history.raceHistory.length > 0) && (
+                <CardFooter className="justify-between border-t px-6 py-4">
+                  <div className="text-muted-foreground text-sm">
+                    Showing recent history (
+                    {history.drillHistory.length + history.raceHistory.length}{' '}
+                    items)
+                  </div>
+                  <Button variant="ghost" size="sm" className="gap-1">
+                    View all <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </CardFooter>
+              )}
           </Card>
         </TabsContent>
+
+        {/* Performance Charts Tab */}
         <TabsContent value="stats" className="mt-4 space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Typing Performance</CardTitle>
-              <CardDescription>
-                Your typing speed and accuracy over time
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="rounded-md border p-4 text-center">
-                <p className="text-muted-foreground">
-                  Complete more typing tests to see your performance charts
-                  here.
-                </p>
-                <Button asChild className="mt-4">
-                  <Link href={ROUTES.PRACTICE}>Practice Now</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>WPM Progression</CardTitle>
+                <CardDescription>Your typing speed over time</CardDescription>
+              </CardHeader>
+              <CardContent className="h-[300px]">
+                {isLoadingCharts ? (
+                  <div className="flex h-full items-center justify-center">
+                    <Skeleton className="h-[250px] w-full" />
+                  </div>
+                ) : chartData?.progression ? (
+                  <ProgressionChart data={chartData.progression} />
+                ) : (
+                  <div className="flex h-full flex-col items-center justify-center text-center">
+                    <LineChart className="mb-2 h-10 w-10 opacity-20" />
+                    <p className="text-muted-foreground">
+                      Complete more typing activities to see your performance
+                      charts
+                    </p>
+                    <Button asChild className="mt-4">
+                      <Link href={ROUTES.PRACTICE}>Practice Now</Link>
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Accuracy Tracking</CardTitle>
+                <CardDescription>
+                  Your typing accuracy over time
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="h-[300px]">
+                {isLoadingCharts ? (
+                  <div className="flex h-full items-center justify-center">
+                    <Skeleton className="h-[250px] w-full" />
+                  </div>
+                ) : chartData?.progression ? (
+                  <AccuracyChart data={chartData.progression} />
+                ) : (
+                  <div className="flex h-full flex-col items-center justify-center text-center">
+                    <Target className="mb-2 h-10 w-10 opacity-20" />
+                    <p className="text-muted-foreground">
+                      Complete more typing activities to see your accuracy
+                      charts
+                    </p>
+                    <Button asChild className="mt-4">
+                      <Link href={ROUTES.PRACTICE}>Practice Now</Link>
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
-        <TabsContent value="achievements" className="mt-4 space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Achievements</CardTitle>
-              <CardDescription>
-                Badges and trophies you&apos;ve earned
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="rounded-md border p-4 text-center">
-                <p className="text-muted-foreground">
-                  Complete challenges and improve your skills to earn
-                  achievements.
-                </p>
-                <Button asChild className="mt-4">
-                  <Link href={ROUTES.PRACTICE}>Start Practicing</Link>
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+
+        {/* Comparison Tab */}
+        <TabsContent value="comparison" className="mt-4 space-y-4">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle>Drill vs Race Performance</CardTitle>
+                <CardDescription>
+                  Compare your performance in drills and races
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="h-[300px]">
+                {isLoadingCharts ? (
+                  <div className="flex h-full items-center justify-center">
+                    <Skeleton className="h-[250px] w-full" />
+                  </div>
+                ) : chartData?.typeStats ? (
+                  <ComparisonChart
+                    typeStats={chartData.typeStats}
+                    mode="type"
+                  />
+                ) : (
+                  <div className="flex h-full flex-col items-center justify-center text-center">
+                    <BarChart3 className="mb-2 h-10 w-10 opacity-20" />
+                    <p className="text-muted-foreground">
+                      Complete drills and races to see comparison charts
+                    </p>
+                    <Button asChild className="mt-4">
+                      <Link href={ROUTES.PRACTICE}>Practice Now</Link>
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Text vs Code Performance</CardTitle>
+                <CardDescription>
+                  Compare your performance with different content types
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="h-[300px]">
+                {isLoadingCharts ? (
+                  <div className="flex h-full items-center justify-center">
+                    <Skeleton className="h-[250px] w-full" />
+                  </div>
+                ) : chartData?.categoryStats ? (
+                  <ComparisonChart
+                    categoryStats={chartData.categoryStats}
+                    mode="category"
+                  />
+                ) : (
+                  <div className="flex h-full flex-col items-center justify-center text-center">
+                    <div className="mb-2 flex items-center gap-4">
+                      <FileText className="h-8 w-8 opacity-20" />
+                      <Code className="h-8 w-8 opacity-20" />
+                    </div>
+                    <p className="text-muted-foreground">
+                      Practice with different content types to see comparison
+                    </p>
+                    <div className="mt-4 flex gap-2">
+                      <Button asChild variant="outline">
+                        <Link href={ROUTES.PRACTICE}>Text Practice</Link>
+                      </Button>
+                      <Button asChild>
+                        <Link href={`${ROUTES.PRACTICE}/code`}>
+                          Code Practice
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>

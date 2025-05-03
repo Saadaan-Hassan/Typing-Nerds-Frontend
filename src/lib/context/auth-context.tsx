@@ -31,6 +31,7 @@ interface AuthContextType {
   register: (data: RegistrationData) => Promise<void>;
   logout: () => Promise<void>;
   refreshTokens: () => Promise<boolean>;
+  fetchAndUpdateUser: () => Promise<User | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -87,6 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     initAuth();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchCurrentUser = async () => {
@@ -190,6 +192,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const { accessToken, refreshToken } = response.data.data;
         console.log('Token refresh successful, setting new tokens');
         setTokens({ accessToken, refreshToken });
+
+        // Fetch latest user data after successful token refresh
+        await fetchAndUpdateUser();
+
         return true;
       }
 
@@ -198,6 +204,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (error) {
       console.error('Error in refreshTokens:', error);
       return false;
+    }
+  };
+
+  const fetchAndUpdateUser = async (): Promise<User | null> => {
+    try {
+      console.log('Fetching and updating current user...');
+      const userData = await fetchCurrentUser();
+      return userData;
+    } catch (error) {
+      console.error('Error fetching and updating user:', error);
+      return null;
     }
   };
 
@@ -230,6 +247,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         register,
         logout,
         refreshTokens,
+        fetchAndUpdateUser,
       }}
     >
       {children}

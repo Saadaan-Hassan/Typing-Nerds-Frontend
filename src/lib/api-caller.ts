@@ -14,7 +14,7 @@ interface JsonRequestData {
 }
 
 // Allow any record type to be used as request data
-type RequestData = JsonRequestData | FormData | Record<string, unknown>;
+export type RequestData = JsonRequestData | FormData | Record<string, unknown>;
 
 const apiCaller = async (
   url: string,
