@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { ROUTES } from '@/constants/routes';
-import { ArrowRight, Code, Keyboard, Target, Trophy } from 'lucide-react';
+import { ArrowRight, Code, Keyboard, Target, Trophy, Zap } from 'lucide-react';
 
 import { useAuth } from '@/lib/context/auth-context';
 import { Button } from '@/components/ui/button';
@@ -27,6 +27,13 @@ export default function DashboardPage() {
       icon: Keyboard,
       href: '/',
       color: 'bg-blue-500/10 text-blue-500',
+    },
+    {
+      title: 'Competition',
+      description: 'Join or create typing competitions',
+      icon: Zap,
+      href: ROUTES.COMPETITION.HOME,
+      color: 'bg-red-500/10 text-red-500',
     },
     {
       title: 'Practice Session',
