@@ -10,9 +10,9 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'TypeRacer - Improve Your Typing Speed',
+  title: 'TypingNerds - Improve Your Typing Speed and Accuracy',
   description:
-    'Practice typing and race against others to improve your speed and accuracy',
+    'Practice typing, compete with others, and track your progress with our innovative typing platform.',
 };
 
 export default function RootLayout({
