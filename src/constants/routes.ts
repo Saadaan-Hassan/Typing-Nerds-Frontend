@@ -7,6 +7,10 @@ export const ROUTES = {
   DASHBOARD: '/dashboard',
   PRACTICE: '/practice',
   LEADERBOARD: '/leaderboard',
+  COMPETITION: {
+    HOME: '/competition',
+    ROOM: '/competition/room',
+  },
   USER: {
     PROFILE: '/user/profile',
     SETTINGS: '/user/settings',

@@ -5,7 +5,7 @@ let socket: Socket | null = null;
 export const initializeSocket = (): Socket => {
   if (!socket) {
     const socketUrl =
-      process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:3001';
+      process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000';
     socket = io(socketUrl, {
       transports: ['websocket'],
       autoConnect: true,

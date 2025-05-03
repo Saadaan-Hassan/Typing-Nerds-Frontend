@@ -1,4 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Typing Nerds Frontend
+
+A modern typing practice and competition platform built with Next.js.
+
+## Racing Competition Feature Guide
+
+We've implemented a real-time racing competition feature that allows users to:
+
+- Create typing race rooms
+- Join existing public or private races
+- Compete in real-time with other users
+- View live race progress of all participants
+- Get detailed performance metrics after races
+
+### Quick Start
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create a `.env.local` file:
+
+```
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_SOCKET_URL=http://localhost:5000
+```
+
+3. Start the development server:
+
+```bash
+npm run dev
+```
+
+4. Open your browser and navigate to:
+
+```
+http://localhost:3000/competition
+```
+
+### Using the Competition Feature
+
+1. From the Competition page, you can:
+   - Create a new competition room
+   - Join an existing public room
+2. In a competition room:
+   - Wait for other participants to join
+   - Follow the countdown when it starts
+   - Type the text as quickly and accurately as possible
+   - See your progress and that of other participants in real-time
+   - View results at the end of the race
+
+## Tech Stack
+
+- **Framework**: Next.js 15
+- **Styling**: Tailwind CSS & Shadcn/UI
+- **State Management**: React Context
+- **Real-time**: Socket.io
+- **Deployment**: Vercel
+
+## Features
+
+- Typing practice mode
+- Multiplayer racing competitions
+- User authentication
+- Performance statistics
+- Leaderboards
+- Code typing mode
+- Customizable settings
 
 ## Getting Started
 
