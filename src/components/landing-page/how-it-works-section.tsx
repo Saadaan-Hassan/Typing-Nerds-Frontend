@@ -44,7 +44,7 @@ const steps = [
 
 export function HowItWorksSection() {
   return (
-    <section className="bg-muted/30 relative py-20">
+    <section className="bg-muted/30 relative px-8 py-20">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,rgba(var(--accent-rgb),0.1),transparent_50%)]" />
 
       <div className="container px-4">
@@ -56,7 +56,7 @@ export function HowItWorksSection() {
           className="mb-16 text-center"
         >
           <h2 className="mb-4 text-3xl font-bold tracking-tight sm:text-4xl">
-            How <span className="text-primary">TypingNerds</span> Works
+            How Typing<span className="text-primary">Nerds</span> Works
           </h2>
           <p className="text-muted-foreground mx-auto max-w-2xl">
             Follow these simple steps to improve your typing skills and join our

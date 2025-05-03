@@ -3,14 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
-import {
-  BarChart2,
-  BookOpen,
-  Keyboard,
-  Menu,
-  User as UserIcon,
-  Zap,
-} from 'lucide-react';
+import { BarChart2, BookOpen, Keyboard, Menu, Zap } from 'lucide-react';
 
 import { useAuth } from '@/lib/context/auth-context';
 import { cn } from '@/lib/utils';
@@ -32,11 +25,6 @@ export function Navbar() {
     { href: ROUTES.PRACTICE, label: 'Practice', icon: BookOpen },
     { href: ROUTES.COMPETITION.HOME, label: 'Competition', icon: Zap },
     { href: ROUTES.LEADERBOARD, label: 'Leaderboard', icon: BarChart2 },
-    {
-      href: isAuthenticated ? ROUTES.DASHBOARD : ROUTES.AUTH.LOGIN,
-      label: isAuthenticated ? 'Dashboard' : 'Login',
-      icon: UserIcon,
-    },
   ];
 
   return (
@@ -46,8 +34,8 @@ export function Navbar() {
         <div className="flex flex-1 items-center">
           <Link href="/" className="flex items-center gap-2">
             <Keyboard className="text-primary h-6 w-6" />
-            <span className="text-primary-foreground text-xl font-bold">
-              TypeRacer
+            <span className="text-xl font-bold">
+              Typing<span className="text-primary">Nerds</span>
             </span>
           </Link>
         </div>

@@ -3,13 +3,15 @@ import { Keyboard } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="bg-muted/30 border-t">
+    <footer className="bg-muted/30 border-t px-8">
       <div className="container px-4 py-12">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="mb-4 flex items-center">
               <Keyboard className="text-primary mr-2 h-6 w-6" />
-              <span className="text-xl font-bold">TypingNerds</span>
+              <span className="text-xl font-bold">
+                Typing<span className="text-primary">Nerds</span>
+              </span>
             </div>
             <p className="text-muted-foreground mb-4">
               Improve your typing speed and accuracy with our innovative typing

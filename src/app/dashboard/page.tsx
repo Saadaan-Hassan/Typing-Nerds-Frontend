@@ -118,7 +118,7 @@ export default function DashboardPage() {
   ];
 
   return (
-    <div className="container py-8">
+    <div className="container p-8">
       <div className="mb-6">
         <h1 className="text-3xl font-bold tracking-tight">
           Welcome back, {user?.name || 'Typist'}
