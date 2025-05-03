@@ -2,14 +2,13 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { useAuth } from '@/lib/context/auth-context';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -33,7 +32,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
+  const { login } = useAuth();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -47,17 +46,9 @@ export function LoginForm() {
     setIsLoading(true);
 
     try {
-      // This would be replaced with your actual authentication logic
-      console.log('Login data:', data);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      toast.success('Login successful');
-
-      router.push('/dashboard');
+      await login(data);
     } catch {
-      toast.error('Unable to login, please try again.');
+      // Error is already handled in the auth context
     } finally {
       setIsLoading(false);
     }
@@ -73,13 +64,17 @@ export function LoginForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="name@example.com" {...field} />
+                <Input
+                  placeholder="you@example.com"
+                  type="email"
+                  disabled={isLoading}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
         <FormField
           control={form.control}
           name="password"
@@ -89,21 +84,23 @@ export function LoginForm() {
               <FormControl>
                 <div className="relative">
                   <Input
+                    placeholder="Enter your password"
                     type={showPassword ? 'text' : 'password'}
-                    placeholder="••••••••"
+                    disabled={isLoading}
                     {...field}
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="text-muted-foreground hover:text-foreground absolute top-0 right-0 h-full px-3 py-2"
+                    className="absolute top-0 right-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
+                    disabled={isLoading}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
+                      <EyeOff className="h-4 w-4" aria-hidden="true" />
                     ) : (
-                      <Eye className="h-4 w-4" />
+                      <Eye className="h-4 w-4" aria-hidden="true" />
                     )}
                     <span className="sr-only">
                       {showPassword ? 'Hide password' : 'Show password'}
@@ -115,18 +112,15 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-
         <div className="flex items-center justify-end">
-          <Button variant="link" className="text-primary px-0 text-sm" asChild>
-            <Link href={ROUTES.AUTH.FORGOT_PASSWORD}>Forgot password?</Link>
-          </Button>
+          <Link
+            href={ROUTES.AUTH.FORGOT_PASSWORD}
+            className="text-muted-foreground hover:text-primary text-sm"
+          >
+            Forgot password?
+          </Link>
         </div>
-
-        <Button
-          type="submit"
-          className="bg-primary text-primary-foreground w-full"
-          disabled={isLoading}
-        >
+        <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
       </form>

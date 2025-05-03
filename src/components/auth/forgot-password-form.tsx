@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { API_ROUTES } from '@/constants/api-routes';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import apiCaller from '@/lib/api-caller';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -38,21 +40,26 @@ export function ForgotPasswordForm() {
     setIsLoading(true);
 
     try {
-      // This would be replaced with your actual password reset logic
-      console.log('Reset password for:', data.email);
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      toast.success(
-        'Password reset link sent! Please check your email to reset your password.'
+      const response = await apiCaller(
+        API_ROUTES.AUTH.FORGOT_PASSWORD,
+        'POST',
+        data,
+        {},
+        false
       );
 
-      setIsSubmitted(true);
-    } catch {
-      toast.error(
-        'There was a problem sending the reset link. Please try again.'
-      );
+      if (response.data.success) {
+        setIsSubmitted(true);
+        toast.success('Password reset email sent successfully');
+      } else {
+        toast.error(response.data.message || 'Failed to send reset email');
+      }
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Failed to send reset email. Please try again.';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -60,20 +67,11 @@ export function ForgotPasswordForm() {
 
   if (isSubmitted) {
     return (
-      <div className="space-y-4">
-        <div className="bg-primary/10 rounded-lg p-4 text-center">
-          <h3 className="text-primary font-medium">Check your email</h3>
-          <p className="text-muted-foreground mt-2 text-sm">
-            We&rsquo;ve sent a password reset link to your email address.
-          </p>
-        </div>
-        <Button
-          variant="outline"
-          className="w-full"
-          onClick={() => setIsSubmitted(false)}
-        >
-          Try another email
-        </Button>
+      <div className="space-y-3 text-center">
+        <h3 className="text-lg font-medium">Check your email</h3>
+        <p className="text-muted-foreground">
+          We&apos;ve sent you a password reset link. Please check your email.
+        </p>
       </div>
     );
   }
@@ -88,19 +86,19 @@ export function ForgotPasswordForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="name@example.com" {...field} />
+                <Input
+                  placeholder="you@example.com"
+                  type="email"
+                  disabled={isLoading}
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-
-        <Button
-          type="submit"
-          className="bg-primary text-primary-foreground w-full"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Sending reset link...' : 'Send reset link'}
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? 'Sending...' : 'Send reset link'}
         </Button>
       </form>
     </Form>
