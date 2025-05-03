@@ -34,7 +34,9 @@ export function Navbar() {
         <div className="flex flex-1 items-center">
           <Link href="/" className="flex items-center gap-2">
             <Keyboard className="text-primary h-6 w-6" />
-            <span className="text-primary text-xl font-bold">TypingNerds</span>
+            <span className="text-xl font-bold">
+              Typing<span className="text-primary">Nerds</span>
+            </span>
           </Link>
         </div>
 

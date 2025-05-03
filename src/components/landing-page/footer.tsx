@@ -9,7 +9,9 @@ export function Footer() {
           <div>
             <div className="mb-4 flex items-center">
               <Keyboard className="text-primary mr-2 h-6 w-6" />
-              <span className="text-xl font-bold">TypingNerds</span>
+              <span className="text-xl font-bold">
+                Typing<span className="text-primary">Nerds</span>
+              </span>
             </div>
             <p className="text-muted-foreground mb-4">
               Improve your typing speed and accuracy with our innovative typing

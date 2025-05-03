@@ -34,8 +34,8 @@ export function HeroSection() {
       <div className="from-background via-background to-primary/5 absolute inset-0 -z-10 bg-gradient-to-b" />
 
       {/* Animated gradient circles */}
-      <div className="from-primary/20 to-accent/20 absolute -top-40 -left-40 h-80 w-80 rounded-full bg-gradient-to-r blur-3xl" />
-      <div className="from-primary/20 to-accent/20 absolute -right-40 -bottom-40 h-80 w-80 rounded-full bg-gradient-to-l blur-3xl" />
+      <div className="from-primary/30 to-accent/30 absolute -top-40 -left-40 h-80 w-80 rounded-full bg-gradient-to-r blur-3xl" />
+      <div className="from-primary/30 to-accent/30 absolute -right-40 -bottom-40 h-80 w-80 rounded-full bg-gradient-to-l blur-3xl" />
 
       {/* Floating keyboard keys animation */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
@@ -59,7 +59,7 @@ export function HeroSection() {
         ].map((key, index) => (
           <motion.div
             key={index}
-            className="text-primary/10 absolute font-mono font-bold"
+            className="text-primary/20 absolute font-mono font-bold"
             initial={{
               x: Math.random() * window.innerWidth,
               y: -100,
