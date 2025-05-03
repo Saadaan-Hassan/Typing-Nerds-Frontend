@@ -1,7 +1,7 @@
 // app/practice/page.tsx
 'use client';
 
-import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import {
   Line,
@@ -45,7 +45,7 @@ const KEY_ROWS = [
   ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
 ];
 
-type Difficulty = 'beginner' | 'intermediate' | 'advanced';
+// type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 
 type Stat = {
   timeLeft: number;
@@ -57,7 +57,7 @@ type Stat = {
 
 export default function PracticeModule() {
   const [roundLength, setRoundLength] = useState(30);
-  const [difficulty, setDifficulty] = useState<Difficulty>('beginner');
+  // const [difficulty, setDifficulty] = useState<Difficulty>('beginner');
   const [lines, setLines] = useState<string[]>(generateLines(3));
   const [currentChar, setCurrentChar] = useState(0);
   const [pressedKey, setPressedKey] = useState<string | null>(null);
