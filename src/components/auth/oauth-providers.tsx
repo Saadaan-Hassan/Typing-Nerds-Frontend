@@ -64,7 +64,7 @@ export function OAuthButtons() {
           <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
         ) : (
           <Image
-            src="/google.svg"
+            src="/google.png"
             alt="Google"
             width={16}
             height={16}

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function SignUpPage() {
   return (
-    <div className="container flex h-[calc(100vh-4rem)] items-center justify-center">
+    <div className="container my-8 flex items-center justify-center">
       <Card className="mx-auto w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="mb-2 flex justify-center">
