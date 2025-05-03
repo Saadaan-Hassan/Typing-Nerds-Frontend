@@ -1,0 +1,14 @@
+# Ignore artifacts:
+build
+coverage
+
+# Ignore all HTML files:
+**/*.html
+public/
+
+.next
+.cache
+.vercel
+.husky
+node_modules
+pgdata
