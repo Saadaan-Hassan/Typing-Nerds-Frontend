@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ChevronDown, Keyboard } from 'lucide-react';
 import { TypeAnimation } from 'react-type-animation';
@@ -9,6 +10,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 export function HeroSection() {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -125,14 +127,8 @@ export function HeroSection() {
           transition={{ duration: 0.5, delay: 0.4 }}
           className="flex flex-col justify-center gap-4 sm:flex-row"
         >
-          <Button
-            size="lg"
-            className="from-primary to-accent text-primary-foreground bg-gradient-to-r hover:opacity-90"
-          >
-            Get Started
-          </Button>
-          <Button size="lg" variant="outline">
-            Try Demo
+          <Button size="lg" onClick={() => router.push('/practice')}>
+            Start practice
           </Button>
         </motion.div>
 

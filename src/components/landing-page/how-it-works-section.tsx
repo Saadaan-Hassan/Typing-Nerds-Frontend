@@ -9,28 +9,36 @@ const steps = [
     title: 'Practice Daily',
     description:
       'Start with personalized typing exercises tailored to your skill level.',
-    color: 'bg-green-500',
+    color: 'bg-blue-300',
+    illustration:
+      'https://media.istockphoto.com/id/1494447525/vector/home-office-workspace-concept-with-desktop-computer.jpg?s=612x612&w=0&k=20&c=__qnA9ZPWanqtSjgh6Zk22pwk7--0g3wmplWSLm4AyU=', // Typing practice illustration
   },
   {
     icon: Users,
     title: 'Join Competitions',
     description:
       'Challenge others in real-time typing races to test your skills.',
-    color: 'bg-blue-500',
+    color: 'bg-gray-500',
+    illustration:
+      'https://www.gsb.stanford.edu/sites/default/files/styles/webp/public/competition-key.jpg.webp?itok=bzyr3V1x', // Competition illustration
   },
   {
     icon: BarChart,
     title: 'Track Progress',
     description:
       'Monitor your improvement with detailed analytics and insights.',
-    color: 'bg-purple-500',
+    color: 'bg-pink-300',
+    illustration:
+      'https://t4.ftcdn.net/jpg/04/73/47/31/360_F_473473129_wN82hxvgR9XpvUQ7YlB4v1wnpjXjiU20.jpg', // Analytics illustration
   },
   {
     icon: Award,
     title: 'Earn Achievements',
     description:
       'Unlock badges and climb the global leaderboard as you improve.',
-    color: 'bg-red-500',
+    color: 'bg-blue-400',
+    illustration:
+      'https://media.istockphoto.com/id/1643836220/vector/businesswoman-jumps-pole-vault-flat-style-design-vector-illustration-business-concept.jpg?s=612x612&w=0&k=20&c=OFzD69GIgrtoLg_jCitABWGKZT78qmAOI1pXUkFtEuI=', // Award illustration
   },
 ];
 
@@ -68,7 +76,9 @@ export function HowItWorksSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className={`flex flex-col ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-8`}
+                className={`flex flex-col ${
+                  index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
+                } items-center gap-8`}
               >
                 <div className="text-center md:w-1/2 md:text-left">
                   <div
@@ -80,13 +90,13 @@ export function HowItWorksSection() {
                   <p className="text-muted-foreground">{step.description}</p>
                 </div>
                 <div className="relative md:w-1/2">
-                  {/* Circle on the timeline */}
-                  <div className="bg-primary absolute top-1/2 left-1/2 hidden h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full md:block" />
-
-                  {/* Step illustration */}
                   <div className="from-background to-muted border-border rounded-lg border bg-gradient-to-br p-6 shadow-lg">
-                    <div className="bg-muted/50 flex aspect-video items-center justify-center rounded">
-                      <step.icon className="text-primary/40 h-16 w-16" />
+                    <div className="bg-muted/50 flex aspect-video items-center justify-center overflow-hidden rounded">
+                      <img
+                        src={step.illustration}
+                        alt={step.title}
+                        className="h-full w-full object-contain"
+                      />
                     </div>
                   </div>
                 </div>
