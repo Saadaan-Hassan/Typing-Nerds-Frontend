@@ -98,7 +98,7 @@ export default function CompetitionPage() {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto p-8">
       <h1 className="mb-8 text-3xl font-bold">Typing Competitions</h1>
 
       <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
