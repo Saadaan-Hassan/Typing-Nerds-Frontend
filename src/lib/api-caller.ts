@@ -1,8 +1,20 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
-type RequestData =
-  | Record<string, string | string[] | number | boolean | File | Blob>
-  | FormData;
+// Generic type for request data that supports nested objects
+interface JsonRequestData {
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | string[]
+    | null
+    | undefined
+    | JsonRequestData
+    | JsonRequestData[];
+}
+
+// Allow any record type to be used as request data
+type RequestData = JsonRequestData | FormData | Record<string, unknown>;
 
 const apiCaller = async (
   url: string,

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { API_ROUTES } from '@/constants/api-routes';
 import { Github } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -11,26 +11,20 @@ import { Button } from '@/components/ui/button';
 export function OAuthButtons() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isGithubLoading, setIsGithubLoading] = useState(false);
-  const router = useRouter();
 
   async function handleGoogleSignIn() {
     setIsGoogleLoading(true);
 
     try {
-      // This would be replaced with your actual Google OAuth logic
-      console.log('Sign in with Google');
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      toast.success('Google sign-in successful!');
-
-      router.push('/dashboard');
+      // Redirect to Google OAuth endpoint with success redirect URL
+      const successUrl = encodeURIComponent(
+        `${window.location.origin}/auth/success`
+      );
+      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}${API_ROUTES.AUTH.GOOGLE}?redirect_url=${successUrl}`;
     } catch {
       toast.error(
         'There was a problem signing in with Google. Please try again.'
       );
-    } finally {
       setIsGoogleLoading(false);
     }
   }
@@ -39,20 +33,15 @@ export function OAuthButtons() {
     setIsGithubLoading(true);
 
     try {
-      // This would be replaced with your actual GitHub OAuth logic
-      console.log('Sign in with GitHub');
-
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      toast.success('GitHub sign-in successful!');
-
-      router.push('/dashboard');
+      // Redirect to GitHub OAuth endpoint with success redirect URL
+      const successUrl = encodeURIComponent(
+        `${window.location.origin}/auth/success`
+      );
+      window.location.href = `${process.env.NEXT_PUBLIC_BACKEND_URL}${API_ROUTES.AUTH.GITHUB}?redirect_url=${successUrl}`;
     } catch {
       toast.error(
         'There was a problem signing in with GitHub. Please try again.'
       );
-    } finally {
       setIsGithubLoading(false);
     }
   }
@@ -69,15 +58,15 @@ export function OAuthButtons() {
           <div className="border-primary h-4 w-4 animate-spin rounded-full border-2 border-t-transparent" />
         ) : (
           <Image
-            src="/placeholder.svg?height=16&width=16"
-            alt="Google logo"
+            src="/google.svg"
+            alt="Google"
             width={16}
             height={16}
+            className="h-4 w-4"
           />
         )}
         Google
       </Button>
-
       <Button
         variant="outline"
         onClick={handleGithubSignIn}

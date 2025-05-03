@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
 import { BarChart2, Keyboard, User } from 'lucide-react';
 
+import { useAuth } from '@/lib/context/auth-context';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -18,14 +19,7 @@ import {
 
 export function Navbar() {
   const pathname = usePathname();
-
-  // Mock authentication state - in a real app, use your auth provider
-  const isAuthenticated = true;
-  const user = {
-    name: 'Jane Doe',
-    email: 'jane@example.com',
-    image: '/placeholder.svg?height=32&width=32',
-  };
+  const { user, isAuthenticated, logout } = useAuth();
 
   const navItems = [
     { href: '/', label: 'Race', icon: Keyboard },
@@ -62,7 +56,7 @@ export function Navbar() {
           </nav>
         </div>
         <div className="flex items-center gap-4">
-          {isAuthenticated ? (
+          {isAuthenticated && user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -71,7 +65,7 @@ export function Navbar() {
                 >
                   <Avatar className="h-8 w-8">
                     <AvatarImage
-                      src={user.image || '/placeholder.svg'}
+                      src={user.profilePicture || '/placeholder.svg'}
                       alt={user.name}
                     />
                     <AvatarFallback className="bg-primary text-primary-foreground">
@@ -97,7 +91,9 @@ export function Navbar() {
                   <Link href={ROUTES.USER.SETTINGS}>Settings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Log out</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => logout()}>
+                  Log out
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

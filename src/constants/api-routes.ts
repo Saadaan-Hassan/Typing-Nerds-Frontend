@@ -1,13 +1,17 @@
 export const API_ROUTES = {
   AUTH: {
-    LOGIN: '/api/token',
-    SIGNUP: '/user/register/',
-    LOGOUT: '/api/users/logout/',
-    CHANGE_PASSWORD: '/api/user/change-password/',
-    REFRESH_TOKEN: '/api/token/refresh/',
-    VERIFY_TOKEN: '/api/token/verify/',
+    REGISTER: '/api/auth/register',
+    LOGIN: '/api/auth/login',
+    LOGOUT: '/api/auth/logout',
+    CURRENT_USER: '/api/auth/me',
+    VERIFY_EMAIL: '/api/auth/verify-email',
+    FORGOT_PASSWORD: '/api/auth/forgot-password',
+    RESET_PASSWORD: '/api/auth/reset-password',
+    REFRESH_TOKEN: '/api/auth/refresh-token',
+    GOOGLE: '/api/auth/google',
+    GITHUB: '/api/auth/github',
   },
   USER: {
-    GET_USER_DATA: '/user/profile/',
+    PROFILE: '/api/user/profile',
   },
 } as const;
