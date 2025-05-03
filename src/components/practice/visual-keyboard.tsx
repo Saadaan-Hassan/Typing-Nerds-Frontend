@@ -234,7 +234,6 @@ export function VisualKeyboard({
                 key={`${rowIndex}-${keyIndex}`}
                 char={key.char}
                 width={key.width}
-                height={key.height}
                 finger={key.finger}
                 isCurrentKey={
                   key.char.toLowerCase() === currentKey.toLowerCase()
