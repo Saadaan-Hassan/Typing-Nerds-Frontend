@@ -4,6 +4,7 @@
 import { ReactNode, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
+import { Keyboard } from 'lucide-react';
 
 import { useAuth } from '@/lib/context/auth-context';
 
@@ -20,46 +21,29 @@ export function AuthGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Don't do anything while auth is still loading
     if (loading) return;
 
-    // Check if it's an auth callback page (don't redirect these at all)
-    const isAuthCallback = AUTH_CALLBACK_PATHS.some(
+    const isCallback = AUTH_CALLBACK_PATHS.some(
       (path) => pathname === path || pathname.startsWith(path)
     );
+    if (isCallback) return;
 
-    // If we're on an auth callback page, don't redirect regardless of auth state
-    if (isAuthCallback) {
-      return;
-    }
-
-    // Check if it's a protected page (dashboard, user profile, etc.)
-    const isProtectedPath =
+    const isProtected =
       pathname === ROUTES.DASHBOARD ||
       pathname.startsWith('/dashboard') ||
       pathname.startsWith('/user');
 
-    if (!isAuthenticated && isProtectedPath) {
-      // Not logged in -> protect restricted routes
-      console.log(
-        'Not authenticated, redirecting from protected page to login'
-      );
+    if (!isAuthenticated && isProtected) {
       router.replace(ROUTES.AUTH.LOGIN);
     } else if (isAuthenticated && pathname.startsWith('/auth')) {
-      // Logged in -> block auth routes
-      console.log(
-        'Already authenticated, redirecting from auth page to dashboard'
-      );
       router.replace(ROUTES.DASHBOARD);
     }
   }, [isAuthenticated, loading, pathname, router]);
 
-  // Show a loader while checking authentication
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center">
-        <div className="border-primary h-6 w-6 animate-spin rounded-full border-2 border-t-transparent" />
-        <span className="ml-2">Loading...</span>
+      <div className="bg-background/75 fixed inset-0 flex items-center justify-center">
+        <Keyboard className="h-16 w-16 animate-pulse" />
       </div>
     );
   }
