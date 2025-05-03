@@ -14,4 +14,9 @@ export const API_ROUTES = {
   USER: {
     PROFILE: '/api/user/profile',
   },
+  DRILLS: {
+    SAVE: '/api/drills',
+    GET_USER_DRILLS: '/api/drills',
+    GET_STATS: '/api/drills/stats',
+  },
 } as const;

@@ -1,3 +1,7 @@
+'use client';
+
+import { useState } from 'react';
+
 import {
   Card,
   CardContent,
@@ -8,8 +12,15 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LeaderboardTable } from '@/components/leaderboard/leaderboard-table';
 import { StatsCards } from '@/components/leaderboard/stats-cards';
+import { UserBadges } from '@/components/leaderboard/user-badges';
 
 export default function LeaderboardPage() {
+  const [timeRange, setTimeRange] = useState('daily');
+
+  const handleTimeRangeChange = (value: string) => {
+    setTimeRange(value);
+  };
+
   return (
     <div className="container py-8">
       <div className="mb-8">
@@ -23,7 +34,15 @@ export default function LeaderboardPage() {
 
       <StatsCards />
 
-      <Tabs defaultValue="daily" className="mt-8">
+      <div className="mt-8">
+        <UserBadges />
+      </div>
+
+      <Tabs
+        defaultValue="daily"
+        className="mt-8"
+        onValueChange={handleTimeRangeChange}
+      >
         <div className="flex items-center justify-between">
           <TabsList className="bg-secondary">
             <TabsTrigger value="daily">Daily</TabsTrigger>
@@ -41,7 +60,7 @@ export default function LeaderboardPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <LeaderboardTable />
+              <LeaderboardTable timeRange={timeRange} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -54,7 +73,7 @@ export default function LeaderboardPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <LeaderboardTable />
+              <LeaderboardTable timeRange={timeRange} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -67,7 +86,7 @@ export default function LeaderboardPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <LeaderboardTable />
+              <LeaderboardTable timeRange={timeRange} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -78,7 +97,7 @@ export default function LeaderboardPage() {
               <CardDescription>The fastest typists of all time</CardDescription>
             </CardHeader>
             <CardContent>
-              <LeaderboardTable />
+              <LeaderboardTable timeRange={timeRange} />
             </CardContent>
           </Card>
         </TabsContent>
