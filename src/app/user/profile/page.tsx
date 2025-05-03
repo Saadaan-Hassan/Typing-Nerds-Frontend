@@ -9,7 +9,6 @@ import {
   Award,
   Clock,
   Crown,
-  History,
   Medal,
   Star,
   Trophy,
@@ -24,7 +23,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -320,14 +318,10 @@ export default function ProfilePage() {
         value={activeTab}
         onValueChange={setActiveTab}
       >
-        <TabsList className="mb-6 grid w-full max-w-md grid-cols-3">
+        <TabsList className="mb-6 grid w-full max-w-md grid-cols-2">
           <TabsTrigger value="overview">
             <Star className="mr-2 h-4 w-4" />
             Overview
-          </TabsTrigger>
-          <TabsTrigger value="history">
-            <History className="mr-2 h-4 w-4" />
-            History
           </TabsTrigger>
           <TabsTrigger value="badges">
             <Medal className="mr-2 h-4 w-4" />
@@ -459,100 +453,8 @@ export default function ProfilePage() {
                   </div>
                 )}
               </CardContent>
-              {combinedHistory.length > 0 && (
-                <CardFooter className="pt-0 text-right">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setActiveTab('history')}
-                  >
-                    View full history
-                  </Button>
-                </CardFooter>
-              )}
             </Card>
           </div>
-        </TabsContent>
-
-        {/* History Tab */}
-        <TabsContent value="history">
-          <Card>
-            <CardHeader>
-              <CardTitle>Typing History</CardTitle>
-              <CardDescription>
-                Records of all your typing sessions
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs defaultValue="races">
-                <TabsList className="mb-4 grid w-full max-w-xs grid-cols-2">
-                  <TabsTrigger value="races">
-                    <Trophy className="mr-2 h-4 w-4" />
-                    Races
-                  </TabsTrigger>
-                  <TabsTrigger value="drills">
-                    <AlarmClock className="mr-2 h-4 w-4" />
-                    Drills
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="races">
-                  {raceHistory.length > 0 ? (
-                    <div className="max-h-96 space-y-1 overflow-y-auto pr-2">
-                      {raceHistory.map((race, idx) => (
-                        <HistoryItem
-                          key={idx}
-                          date={race.date}
-                          wpm={race.wpm}
-                          accuracy={race.accuracy}
-                          type="race"
-                          position={race.position}
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-muted-foreground flex flex-col items-center justify-center py-8 text-center">
-                      <Trophy className="mb-2 h-10 w-10 opacity-20" />
-                      <p>No race history found</p>
-                      <p className="text-sm">
-                        Compete in typing races to build your history
-                      </p>
-                      <Button className="mt-4" asChild>
-                        <Link href={ROUTES.COMPETITION.HOME}>Join a Race</Link>
-                      </Button>
-                    </div>
-                  )}
-                </TabsContent>
-
-                <TabsContent value="drills">
-                  {drillHistory.length > 0 ? (
-                    <div className="max-h-96 space-y-1 overflow-y-auto pr-2">
-                      {drillHistory.map((drill, idx) => (
-                        <HistoryItem
-                          key={idx}
-                          date={drill.date}
-                          wpm={drill.wpm}
-                          accuracy={drill.accuracy}
-                          type="drill"
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-muted-foreground flex flex-col items-center justify-center py-8 text-center">
-                      <AlarmClock className="mb-2 h-10 w-10 opacity-20" />
-                      <p>No practice history found</p>
-                      <p className="text-sm">
-                        Complete typing practice sessions to build your history
-                      </p>
-                      <Button className="mt-4" asChild>
-                        <Link href={ROUTES.PRACTICE}>Practice Now</Link>
-                      </Button>
-                    </div>
-                  )}
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
         </TabsContent>
 
         {/* Badges Tab */}
@@ -567,9 +469,15 @@ export default function ProfilePage() {
             <CardContent>
               {user.badges && user.badges.length > 0 ? (
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-                  {user.badges.map((badge, idx) => (
-                    <BadgeDisplay key={idx} badge={badge} />
-                  ))}
+                  {/* Filter out duplicate badges based on badge._id */}
+                  {user.badges
+                    .filter(
+                      (badge, index, self) =>
+                        index === self.findIndex((b) => b._id === badge._id)
+                    )
+                    .map((badge, idx) => (
+                      <BadgeDisplay key={idx} badge={badge} />
+                    ))}
                 </div>
               ) : (
                 <div className="text-muted-foreground flex flex-col items-center justify-center py-12 text-center">

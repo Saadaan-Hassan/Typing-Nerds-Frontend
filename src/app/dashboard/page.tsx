@@ -6,11 +6,9 @@ import { ROUTES } from '@/constants/routes';
 import {
   ArrowRight,
   BarChart3,
-  ChevronRight,
   Code,
   FileText,
   History,
-  Keyboard,
   LineChart,
   Target,
   Trophy,
@@ -81,22 +79,8 @@ export default function DashboardPage() {
 
   const quickActions = [
     {
-      title: 'Quick Race',
-      description: 'Join a typing race against other users',
-      icon: Keyboard,
-      href: '/',
-      color: 'bg-blue-500/10 text-blue-500',
-    },
-    {
-      title: 'Competition',
-      description: 'Join or create typing competitions',
-      icon: Zap,
-      href: ROUTES.COMPETITION.HOME,
-      color: 'bg-red-500/10 text-red-500',
-    },
-    {
-      title: 'Practice Session',
-      description: 'Improve your typing skills with customized drills',
+      title: 'Practice',
+      description: 'Improve your typing skills with practice drills',
       icon: Target,
       href: ROUTES.PRACTICE,
       color: 'bg-green-500/10 text-green-500',
@@ -107,6 +91,13 @@ export default function DashboardPage() {
       icon: Code,
       href: `${ROUTES.PRACTICE}/code`,
       color: 'bg-purple-500/10 text-purple-500',
+    },
+    {
+      title: 'Competition',
+      description: 'Join or create typing competitions',
+      icon: Zap,
+      href: ROUTES.COMPETITION.HOME,
+      color: 'bg-red-500/10 text-red-500',
     },
     {
       title: 'Leaderboard',
@@ -217,15 +208,12 @@ export default function DashboardPage() {
             {history &&
               (history.drillHistory.length > 0 ||
                 history.raceHistory.length > 0) && (
-                <CardFooter className="justify-between border-t px-6 py-4">
+                <CardFooter className="border-t px-6 py-4">
                   <div className="text-muted-foreground text-sm">
                     Showing recent history (
                     {history.drillHistory.length + history.raceHistory.length}{' '}
                     items)
                   </div>
-                  <Button variant="ghost" size="sm" className="gap-1">
-                    View all <ChevronRight className="h-4 w-4" />
-                  </Button>
                 </CardFooter>
               )}
           </Card>

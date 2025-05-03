@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ROUTES } from '@/constants/routes';
-import { BarChart2, BookOpen, Keyboard, Menu, Zap } from 'lucide-react';
+import { BarChart2, BookOpen, Keyboard, Menu, User, Zap } from 'lucide-react';
 
 import { useAuth } from '@/lib/context/auth-context';
 import { cn } from '@/lib/utils';
@@ -22,6 +22,11 @@ export function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
 
   const navItems = [
+    {
+      href: isAuthenticated ? ROUTES.DASHBOARD : ROUTES.AUTH.LOGIN,
+      label: isAuthenticated ? 'Dashboard' : 'Login',
+      icon: User,
+    },
     { href: ROUTES.PRACTICE, label: 'Practice', icon: BookOpen },
     { href: ROUTES.COMPETITION.HOME, label: 'Competition', icon: Zap },
     { href: ROUTES.LEADERBOARD, label: 'Leaderboard', icon: BarChart2 },
