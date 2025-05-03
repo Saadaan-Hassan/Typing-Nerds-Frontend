@@ -1,3 +1,5 @@
+import Head from 'next/head';
+
 import { CTASection } from '@/components/landing-page/cta-section';
 import { Footer } from '@/components/landing-page/footer';
 import { HeroSection } from '@/components/landing-page/hero-section';
@@ -7,13 +9,20 @@ import { TestimonialsSection } from '@/components/landing-page/testimonials-sect
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col">
-      <HeroSection />
-      <HowItWorksSection />
-      <StatsSection />
-      <TestimonialsSection />
-      <CTASection />
-      <Footer />
-    </main>
+    <>
+      <Head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#4f46e5" />
+        <link rel="apple-touch-icon" href="/logo.png" />
+      </Head>
+      <main className="flex min-h-screen flex-col">
+        <HeroSection />
+        <HowItWorksSection />
+        <StatsSection />
+        <TestimonialsSection />
+        <CTASection />
+        <Footer />
+      </main>
+    </>
   );
 }
