@@ -1,4 +1,4 @@
-# Typing Nerds Frontend
+# Typing Nerds Frontend  
 
 A modern typing practice and competition platform built with Next.js.
 
